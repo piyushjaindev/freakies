@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "684545786236",
+    "firebase_url": "https://freakies-f9a09.firebaseio.com",
+    "project_id": "freakies-f9a09",
+    "storage_bucket": "freakies-f9a09.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:684545786236:android:2631d89dde55b8f958a4f9",
+        "android_client_info": {
+          "package_name": "com.freakies.freakies"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "684545786236-84bp24ocf8qv5o454lrcpdr2vjd2umma.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.freakies.freakies",
+            "certificate_hash": "50ca28a8ba37bd8fe6a3e221e648793188fb1fa4"
+          }
+        },
+        {
+          "client_id": "684545786236-8nm9pgqbguj030rm5r6ugc85sp80dae8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXp3VyCn3iFdZbNZ7vpkDsk1VsOhUpcXk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "684545786236-8nm9pgqbguj030rm5r6ugc85sp80dae8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
