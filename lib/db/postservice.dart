@@ -7,7 +7,7 @@ class PostService {
   final postRef = Firestore.instance.collection('posts');
   final commentsRef = Firestore.instance.collection('comments');
 
-  Future<List<DocumentSnapshot>> fetchTimelinePost(String id) async {
+  Future<List<PostModal>> fetchTimelinePost(String id) async {
     CollectionReference timelinePostRef = Firestore.instance
         .collection('timeline')
         .document(id)
@@ -16,25 +16,28 @@ class PostService {
         .orderBy('timestamp', descending: true)
         .getDocuments();
 
-    List<DocumentSnapshot> list = [];
+    List<PostModal> list = [];
 
     for (DocumentSnapshot documentSnapshot in snapshot.documents) {
-      DocumentSnapshot snap = await getPostData(documentSnapshot.data);
-      list.add(snap);
+      PostModal post = await PostModal.getInstance(documentSnapshot.data, id);
+      list.add(post);
     }
     return list;
   }
 
-  Future<List<DocumentSnapshot>> getAllPosts() async {
+  Future<List<PostModal>> getAllPosts(String cid) async {
     CollectionReference allPostRef = Firestore.instance.collection('allPosts');
     QuerySnapshot snapshot =
         await allPostRef.orderBy('timestamp', descending: true).getDocuments();
 
-    List<DocumentSnapshot> list = [];
+    List<PostModal> list = [];
 
     for (DocumentSnapshot documentSnapshot in snapshot.documents) {
-      DocumentSnapshot snap = await getPostData(documentSnapshot.data);
-      list.add(snap);
+      if (documentSnapshot.data['ownerID'] != cid) {
+        PostModal post =
+            await PostModal.getInstance(documentSnapshot.data, cid);
+        list.add(post);
+      }
     }
     return list;
   }
@@ -88,7 +91,10 @@ class PostService {
         .collection('metaData')
         .document(cid)
         .get();
-    return documentSnapshot.exists;
+    if (documentSnapshot.exists)
+      return documentSnapshot.data['liked'];
+    else
+      return false;
   }
 
   manageLikes(PostModal post, String cid) async {
@@ -99,17 +105,76 @@ class PostService {
           .document(post.postID)
           .collection('metaData')
           .document(cid);
-      DocumentSnapshot documentSnapshot = await documentReference.get();
-      if (documentSnapshot.exists) {
-        await documentReference.delete();
-      } else {
-        documentReference.setData({});
-      }
+      await documentReference
+          .setData({'liked': post.isLiked, 'timestamp': DateTime.now()});
+      //DocumentSnapshot documentSnapshot = await documentReference.get();
+//      if (documentSnapshot.exists) {
+//        await documentReference.delete();
+//      } else {
+//        documentReference.setData({});
+//      }
     } catch (e) {
       throw e;
 //      Scaffold.of(context).showSnackBar(SnackBar(
 //        content: Text('Something went wrong'),
 //      ));
     }
+  }
+
+  Future<void> createPostDocument(String cid, String postId, Map doc) async {
+    try {
+      await postRef
+          .document(cid)
+          .collection('postData')
+          .document(postId)
+          .setData({
+        'ownerID': cid,
+        'postID': postId,
+        'caption': doc['caption'],
+        'thumbnailURL': doc['thumbnailURL'],
+        'videoURL': doc['videoURL'],
+        'timestamp': DateTime.now(),
+        'tags': doc['tags']
+      });
+    } catch (e) {
+      throw e;
+    }
+  }
+
+//  Future<List<PostModal>> profilePopularPosts(String id) async {
+//    QuerySnapshot snapshot = await postRef
+//        .document(id)
+//        .collection('postData')
+//        .limit(5)
+//        .getDocuments();
+//
+//    List<PostModal> list = [];
+//
+//    for (DocumentSnapshot documentSnapshot in snapshot.documents) {
+//      PostModal post = await PostModal.getInstance(documentSnapshot.data, id);
+//      list.add(post);
+//    }
+//    return list;
+//  }
+
+  deleteProfileVideo(String uid, String docid) async {
+    await postRef.document(uid).collection('postData').document(docid).delete();
+  }
+
+  Future<List<PostModal>> profileAllPosts(String uid) async {
+    QuerySnapshot snapshot = await postRef
+        .document(uid)
+        .collection('postData')
+        .orderBy('timestamp', descending: true)
+        .getDocuments();
+
+    List<PostModal> list = [];
+
+    for (DocumentSnapshot documentSnapshot in snapshot.documents) {
+      PostModal post = await PostModal.getInstance(documentSnapshot.data, uid);
+      list.add(post);
+    }
+
+    return list;
   }
 }

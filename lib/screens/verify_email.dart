@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class VerifyEmail extends StatefulWidget {
   @override
@@ -7,8 +8,8 @@ class VerifyEmail extends StatefulWidget {
 }
 
 class _VerifyEmailState extends State<VerifyEmail> {
-  final _auth = FirebaseAuth.instance;
   FirebaseUser user;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
 //  checkUser() async {
 //    try {
@@ -32,6 +33,7 @@ class _VerifyEmailState extends State<VerifyEmail> {
 
   @override
   Widget build(BuildContext context) {
+    user = Provider.of<FirebaseUser>(context);
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -78,12 +80,12 @@ class _VerifyEmailState extends State<VerifyEmail> {
                 padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 40.0),
                 onPressed: () async {
                   try {
-                    user.sendEmailVerification();
-                    Scaffold.of(context).showSnackBar(SnackBar(
+                    await user.sendEmailVerification();
+                    _scaffoldKey.currentState.showSnackBar(SnackBar(
                       content: Text('Verification email sent to ${user.email}'),
                     ));
                   } catch (e) {
-                    Scaffold.of(context).showSnackBar(SnackBar(
+                    _scaffoldKey.currentState.showSnackBar(SnackBar(
                       content: Text('Something went wrong'),
                     ));
                   }

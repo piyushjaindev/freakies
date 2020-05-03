@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:freakies/modals/currentuser.dart';
 import 'package:freakies/modals/post_modal.dart';
 import 'package:freakies/widgets/video_player_widget.dart';
 import 'package:provider/provider.dart';
@@ -6,7 +7,8 @@ import 'package:provider/provider.dart';
 class VideoPageView extends StatefulWidget {
   final List<PostModal> postLists;
   final int currentIndex;
-  VideoPageView({this.postLists, this.currentIndex = 0});
+  final bool isOwner;
+  VideoPageView({this.postLists, this.currentIndex = 0, this.isOwner = false});
 
   @override
   _VideoPageViewState createState() => _VideoPageViewState();
@@ -14,19 +16,31 @@ class VideoPageView extends StatefulWidget {
 
 class _VideoPageViewState extends State<VideoPageView> {
   PageController _pageController;
-  int index;
+  List<PostModal> postLists;
 
   @override
   void initState() {
-    // TODO: implement initState
-    index = widget.currentIndex;
+    // postLists = widget.postLists;
+
     super.initState();
-    _pageController = PageController(initialPage: index);
+  }
+
+  @override
+  void didChangeDependencies() {
+    postLists = widget.isOwner
+        ? Provider.of<CurrentUser>(context).posts
+        : widget.postLists;
+    if (widget.isOwner && postLists.length < 1) Navigator.pop(context);
+    _pageController = PageController(
+        initialPage: postLists.length > widget.currentIndex
+            ? widget.currentIndex
+            : postLists.length - 1,
+        keepPage: true);
+    super.didChangeDependencies();
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
     _pageController.dispose();
     super.dispose();
   }
@@ -36,11 +50,11 @@ class _VideoPageViewState extends State<VideoPageView> {
     return PageView.builder(
         //physics: NeverScrollableScrollPhysics(),
         controller: _pageController,
-        itemCount: widget.postLists.length, // - widget.currentIndex,
+        itemCount: postLists.length, // - widget.currentIndex,
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, int i) {
           return ChangeNotifierProvider.value(
-            value: widget.postLists[i],
+            value: postLists[i],
             child: VideoPlayerWidget(),
           );
         });

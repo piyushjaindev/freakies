@@ -1,56 +1,52 @@
-import 'dart:convert' as JSON;
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
-import 'package:freakies/db/userservice.dart';
+import 'package:freakies/screens/sign_in_page.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:http/http.dart' as http;
 
-enum PageType { signIn, signUp, convertGuest, loginWithoutConvert }
+//enum PageType { signIn, signUp, convertGuest, loginWithoutConvert }
 
 class AuthService {
   final _auth = FirebaseAuth.instance;
 
-  checkCurrentUser(PageType type) async {
-    try {
-      if (type == PageType.signIn || type == PageType.signUp) {
-        final _user = await _auth.currentUser();
-        if (_user != null) {
-          if (_user.isAnonymous) {
-//            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
-//                builder: (context) => Home(user: _user,)),
-//                    (Route<dynamic> route) => false);
-          } else {
-            checkIfAlreadyRegisterd(firebaseUser: _user);
-          }
-        }
-      }
-    } catch (e) {
-      // _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Something went wrong'),));
-    }
-  }
+//  checkCurrentUser(PageType type) async {
+//    try {
+//      if (type == PageType.signIn || type == PageType.signUp) {
+//        final _user = await _auth.currentUser();
+//        if (_user != null) {
+//          if (_user.isAnonymous) {
+////            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+////                builder: (context) => Home(user: _user,)),
+////                    (Route<dynamic> route) => false);
+//          } else {
+//            checkIfAlreadyRegisterd(firebaseUser: _user);
+//          }
+//        }
+//      }
+//    } catch (e) {
+//      // _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Something went wrong'),));
+//    }
+//  }
 
-  checkIfAlreadyRegisterd(
-      {FirebaseUser firebaseUser, String name = '', String dpURL = ''}) async {
-    try {
-      bool isRegistered = await UserService().checkUser(firebaseUser.uid);
-      if (isRegistered) {
-      }
-//        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
-//            builder: (context) => Home(user: firebaseUser,)),
-//                (Route<dynamic> route) => false);
-      else {}
-//        Navigator.push(context, MaterialPageRoute(
-//            builder: (context) => EditProfile(name: name, dpURL: dpURL,)));
-    } catch (e) {
-      throw e;
-    }
-  }
+//  checkIfAlreadyRegisterd(
+//      {FirebaseUser firebaseUser, String name = '', String dpURL = ''}) async {
+//    try {
+//      bool isRegistered = await UserService().checkUser(firebaseUser.uid);
+//      if (isRegistered) {
+//      }
+////        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+////            builder: (context) => Home(user: firebaseUser,)),
+////                (Route<dynamic> route) => false);
+//      else {}
+////        Navigator.push(context, MaterialPageRoute(
+////            builder: (context) => EditProfile(name: name, dpURL: dpURL,)));
+//    } catch (e) {
+//      throw e;
+//    }
+//  }
 
-  void login(String email, String password) async {
+  Future<void> login(String email, String password) async {
     try {
-      final user = await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
 //      if (user != null) {
 //        return true;
 //        FirebaseUser firebaseUser = await _auth.currentUser();
@@ -74,16 +70,16 @@ class AuthService {
     }
   }
 
-  register(PageType type, String email, String password) async {
+  Future<void> register(PageType type, String email, String password) async {
     try {
       if (type == PageType.convertGuest) {
         final AuthCredential credential =
             EmailAuthProvider.getCredential(email: email, password: password);
-        guestConvertMethod(credential);
+        await guestConvertMethod(credential);
 //          Navigator.push(context, MaterialPageRoute(
 ////              builder: (context) => EditProfile()));
       } else {
-        final user = await _auth.createUserWithEmailAndPassword(
+        await _auth.createUserWithEmailAndPassword(
             email: email, password: password);
 //        if (user != null) {
 //          FirebaseUser firebaseUser = await _auth.currentUser();
@@ -113,31 +109,32 @@ class AuthService {
     }
   }
 
-  guestConvertMethod(AuthCredential credential) async {
+  Future<void> guestConvertMethod(AuthCredential credential) async {
     try {
       FirebaseUser firebaseUser = await _auth.currentUser();
       await firebaseUser.linkWithCredential(credential);
-      await firebaseUser.reload();
+      await _auth.signOut();
+      await _auth.signInWithCredential(credential);
     } catch (e) {
       throw e;
     }
   }
 
-  void anonymousSignIn() async {
-    try {
-      final user = await _auth.signInAnonymously();
-      if (user != null) {
-        FirebaseUser firebaseUser = await _auth.currentUser();
-//        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
-//            builder: (context) => Home(user: firebaseUser,)), (
-//            Route<dynamic> route) => false);
-      }
-    } catch (e) {
-      //   _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Something went wrong'),));
-    }
-  }
+//  void anonymousSignIn() async {
+//    try {
+//      final user = await _auth.signInAnonymously();
+//      if (user != null) {
+//        FirebaseUser firebaseUser = await _auth.currentUser();
+////        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+////            builder: (context) => Home(user: firebaseUser,)), (
+////            Route<dynamic> route) => false);
+//      }
+//    } catch (e) {
+//      //   _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Something went wrong'),));
+//    }
+//  }
 
-  googleSignIn(PageType type) async {
+  Future<void> googleSignIn(PageType type) async {
     try {
       final googleSignIn = GoogleSignIn();
       GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
@@ -147,18 +144,17 @@ class AuthService {
         idToken: gSA.idToken,
       );
       if (type == PageType.convertGuest) {
-        guestConvertMethod(credential);
+        await guestConvertMethod(credential);
         //  Navigator.push(context, MaterialPageRoute(
         //      builder: (context) => EditProfile(name: googleSignInAccount.displayName, dpURL: googleSignInAccount.photoUrl,)));
 
       } else {
-        final AuthResult authResult =
-            await _auth.signInWithCredential(credential);
-        FirebaseUser firebaseUser = authResult.user;
-        checkIfAlreadyRegisterd(
-            firebaseUser: firebaseUser,
-            name: googleSignInAccount.displayName,
-            dpURL: googleSignInAccount.photoUrl);
+        await _auth.signInWithCredential(credential);
+//        FirebaseUser firebaseUser = authResult.user;
+//        checkIfAlreadyRegisterd(
+//            firebaseUser: firebaseUser,
+//            name: googleSignInAccount.displayName,
+//            dpURL: googleSignInAccount.photoUrl);
       }
     } catch (e) {
       throw e;
@@ -183,30 +179,29 @@ class AuthService {
     }
   }
 
-  facebookSignIn(PageType type) async {
+  Future<void> facebookSignIn(PageType type) async {
     try {
       final fbLogin = FacebookLogin();
       final result = await fbLogin.logIn(['email']);
       switch (result.status) {
         case FacebookLoginStatus.loggedIn:
           final token = result.accessToken.token;
-          final graphResponse = await http.get(
-              'https://graph.facebook.com/v2.12/me?fields=name,picture,email&access_token=$token');
-          final profile = JSON.jsonDecode(graphResponse.body);
+//          final graphResponse = await http.get(
+//              'https://graph.facebook.com/v2.12/me?fields=name,picture,email&access_token=$token');
+//          final profile = JSON.jsonDecode(graphResponse.body);
           final AuthCredential facebookAuthCred =
               FacebookAuthProvider.getCredential(accessToken: token);
           if (type == PageType.convertGuest) {
-            guestConvertMethod(facebookAuthCred);
+            await guestConvertMethod(facebookAuthCred);
             //  Navigator.push(context, MaterialPageRoute(
             //      builder: (context) => EditProfile(name: profile['name'], dpURL: profile['pictures']['data']['url'],)));
           } else {
-            final AuthResult authResult =
-                await _auth.signInWithCredential(facebookAuthCred);
-            FirebaseUser firebaseUser = authResult.user;
-            checkIfAlreadyRegisterd(
-                firebaseUser: firebaseUser,
-                name: profile['name'],
-                dpURL: profile['pictures']['data']['url']);
+            await _auth.signInWithCredential(facebookAuthCred);
+//            FirebaseUser firebaseUser = authResult.user;
+//            checkIfAlreadyRegisterd(
+//                firebaseUser: firebaseUser,
+//                name: profile['name'],
+//                dpURL: profile['pictures']['data']['url']);
           }
           break;
         case FacebookLoginStatus.cancelledByUser:

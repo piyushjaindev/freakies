@@ -68,9 +68,9 @@ class Notifications extends StatelessWidget {
               },
               separatorBuilder: (context, index) => Divider(
                 thickness: 1.0,
-                color: Colors.black,
-                endIndent: 20.0,
-                indent: 20.0,
+                color: Theme.of(context).accentColor,
+                endIndent: 5.0,
+                indent: 5.0,
                 height: 3.0,
               ),
             );

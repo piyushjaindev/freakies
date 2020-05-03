@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:freakies/db/postservice.dart';
 import 'package:freakies/modals/currentuser.dart';
@@ -117,25 +116,22 @@ class Post extends StatelessWidget {
                   future: user.fetchTimeline(),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      List<DocumentSnapshot> list = snapshot.data;
+                      List<PostModal> postList = snapshot.data;
                       return VideoPageView(
-                        postLists: list.map((snap) {
-                          return PostModal.create(snap.data);
-                        }).toList(),
+                        postLists: postList,
                         currentIndex: 0,
                       );
                     }
                     return Loader();
                   }),
               FutureBuilder(
-                  future: PostService().getAllPosts(),
+                  future: PostService().getAllPosts(user.id),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      List<DocumentSnapshot> list = snapshot.data;
+                      List<PostModal> postList = snapshot.data;
+
                       return VideoPageView(
-                        postLists: list.map((snap) {
-                          return PostModal.create(snap.data);
-                        }).toList(),
+                        postLists: postList,
                         currentIndex: 0,
                       );
                     }

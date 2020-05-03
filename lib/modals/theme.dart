@@ -38,8 +38,8 @@ ThemeData appTheme() {
     return baseTheme.textTheme.copyWith(
       title: TextStyle(
         fontFamily: 'NotoSerif',
-        letterSpacing: 1.2,
-        wordSpacing: 2.5,
+        letterSpacing: 1.0,
+        wordSpacing: 2.0,
         fontSize: 25.0,
       ),
       subtitle: TextStyle(

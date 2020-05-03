@@ -1,12 +1,12 @@
+//import 'dart:html';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:freakies/db/authservice.dart';
-import 'package:freakies/modals/functions.dart' show checkUser;
-import 'package:freakies/screens/edit_profile.dart';
-import 'package:freakies/screens/home.dart';
 import 'package:freakies/screens/reset_password.dart';
+import 'package:freakies/widgets/loader.dart';
 
-//enum PageType { signIn, signUp, convertGuest, loginWithoutConvert }
+enum PageType { signIn, signUp, convertGuest, loginWithoutConvert }
 
 class SignInPage extends StatefulWidget {
   final PageType type;
@@ -27,11 +27,13 @@ class _SignInPageState extends State<SignInPage> {
   final _auth = FirebaseAuth.instance;
   AuthService _authService = AuthService();
   Widget actionWidget;
+  bool isProcessing = false;
+  PageType type;
 
   @override
   void initState() {
-    if (widget.type == PageType.convertGuest ||
-        widget.type == PageType.loginWithoutConvert) {
+    type = widget.type;
+    if (type == PageType.convertGuest || type == PageType.loginWithoutConvert) {
       actionWidget = IconButton(
         icon: Icon(Icons.close),
         iconSize: 35.0,
@@ -42,54 +44,61 @@ class _SignInPageState extends State<SignInPage> {
     } else {
       actionWidget = Text('');
     }
-    checkCurrentUser();
+    //checkCurrentUser();
     super.initState();
   }
 
-  checkCurrentUser() async {
-    try {
-      if (widget.type == PageType.signIn || widget.type == PageType.signUp) {
-        final _user = await _auth.currentUser();
-        if (_user != null) {
-          if (_user.isAnonymous) {
-            Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => Home()),
-                (Route<dynamic> route) => false);
-          } else {
-            checkIfAlreadyRegisterd(firebaseUser: _user);
-          }
-        }
-      }
-    } catch (e) {
-      _scaffoldKey.currentState.showSnackBar(SnackBar(
-        content: Text('Something went wrong'),
-      ));
-    }
-  }
-
-  checkIfAlreadyRegisterd(
-      {FirebaseUser firebaseUser, String name = '', String dpURL = ''}) async {
-    try {
-      bool isRegistered = await checkUser(firebaseUser.uid);
-      if (isRegistered)
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => Home()),
-            (Route<dynamic> route) => false);
-      else
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => EditProfile()));
-    } catch (e) {
-      throw e;
-    }
-  }
+//  checkCurrentUser() async {
+//    try {
+//      if (widget.type == PageType.signIn || widget.type == PageType.signUp) {
+//        final _user = await _auth.currentUser();
+//        if (_user != null) {
+//          if (_user.isAnonymous) {
+//            Navigator.pushAndRemoveUntil(
+//                context,
+//                MaterialPageRoute(builder: (context) => Home()),
+//                (Route<dynamic> route) => false);
+//          } else {
+//            checkIfAlreadyRegisterd(firebaseUser: _user);
+//          }
+//        }
+//      }
+//    } catch (e) {
+//      _scaffoldKey.currentState.showSnackBar(SnackBar(
+//        content: Text('Something went wrong'),
+//      ));
+//    }
+//  }
+//
+//  checkIfAlreadyRegisterd(
+//      {FirebaseUser firebaseUser, String name = '', String dpURL = ''}) async {
+//    try {
+//      bool isRegistered = await checkUser(firebaseUser.uid);
+//      if (isRegistered)
+//        Navigator.pushAndRemoveUntil(
+//            context,
+//            MaterialPageRoute(builder: (context) => Home()),
+//            (Route<dynamic> route) => false);
+//      else
+//        Navigator.push(
+//            context, MaterialPageRoute(builder: (context) => EditProfile()));
+//    } catch (e) {
+//      throw e;
+//    }
+//  }
 
   loginUserMethod() async {
+//    setState(() {
+//      isProcessing = true;
+//    });
     if (_formKey.currentState.validate()) {
+      setState(() {
+        isProcessing = true;
+      });
       _formKey.currentState.save();
+
       try {
-        _authService.login(_email, _password);
+        await _authService.login(_email, _password);
       }
 //      try {
 //        final user = await _auth.signInWithEmailAndPassword(
@@ -118,29 +127,24 @@ class _SignInPageState extends State<SignInPage> {
             ));
             break;
         }
+        setState(() {
+          isProcessing = false;
+        });
       }
     }
   }
 
   registerUserMethod() async {
     if (_formKey.currentState.validate()) {
+      setState(() {
+        isProcessing = true;
+      });
       _formKey.currentState.save();
       try {
-        _authService.register(widget.type, _email, _password);
-//        if (widget.type == PageType.convertGuest) {
-//          final AuthCredential credential = EmailAuthProvider.getCredential(
-//              email: _email, password: _password);
-//          guestConvertMethod(credential);
-//          Navigator.push(
-//              context, MaterialPageRoute(builder: (context) => EditProfile()));
-//        } else {
-//          final user = await _auth.createUserWithEmailAndPassword(
-//              email: _email, password: _password);
-//          if (user != null) {
-//            FirebaseUser firebaseUser = await _auth.currentUser();
-//            checkIfAlreadyRegisterd(firebaseUser: firebaseUser);
-//          }
-//        }
+        await _authService.register(type, _email, _password);
+        if (type == PageType.convertGuest) {
+          Navigator.pop(context);
+        }
       } catch (e) {
         switch (e.code) {
           case 'ERROR_EMAIL_ALREADY_IN_USE':
@@ -170,54 +174,50 @@ class _SignInPageState extends State<SignInPage> {
             ));
             break;
         }
+        setState(() {
+          isProcessing = false;
+        });
       }
     }
+//    setState(() {
+//      isProcessing = false;
+//    });
   }
 
   void anonymousSignIn() async {
+    setState(() {
+      isProcessing = true;
+    });
     try {
-      final user = await _auth.signInAnonymously();
-      if (user != null) {
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => Home()),
-            (Route<dynamic> route) => false);
-      }
+      await _auth.signInAnonymously();
+//      if (user != null) {
+//        Navigator.pushAndRemoveUntil(
+//            context,
+//            MaterialPageRoute(builder: (context) => Home()),
+//            (Route<dynamic> route) => false);
+//      }
     } catch (e) {
       _scaffoldKey.currentState.showSnackBar(SnackBar(
         content: Text('Something went wrong'),
       ));
+      setState(() {
+        isProcessing = false;
+      });
     }
+//    setState(() {
+////      isProcessing = false;
+////    });
   }
 
   signInWithGoogle() async {
+    setState(() {
+      isProcessing = true;
+    });
     try {
-      _authService.googleSignIn(widget.type);
-//      final googleSignIn = GoogleSignIn();
-//      GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
-//      GoogleSignInAuthentication gSA = await googleSignInAccount.authentication;
-//      final AuthCredential credential = GoogleAuthProvider.getCredential(
-//        accessToken: gSA.accessToken,
-//        idToken: gSA.idToken,
-//      );
-//      if (widget.type == PageType.convertGuest) {
-//        guestConvertMethod(credential);
-//        Navigator.push(
-//            context,
-//            MaterialPageRoute(
-//                builder: (context) => EditProfile(
-//                      name: googleSignInAccount.displayName,
-//                      dpURL: googleSignInAccount.photoUrl,
-//                    )));
-//      } else {
-//        final AuthResult authResult =
-//            await _auth.signInWithCredential(credential);
-//        FirebaseUser firebaseUser = authResult.user;
-//        checkIfAlreadyRegisterd(
-//            firebaseUser: firebaseUser,
-//            name: googleSignInAccount.displayName,
-//            dpURL: googleSignInAccount.photoUrl);
-//      }
+      await _authService.googleSignIn(type);
+      if (type == PageType.convertGuest) {
+        Navigator.pop(context);
+      }
     } catch (e) {
       switch (e.code) {
         case 'ERROR_EMAIL_ALREADY_IN_USE':
@@ -247,260 +247,222 @@ class _SignInPageState extends State<SignInPage> {
           ));
           break;
       }
+      setState(() {
+        isProcessing = false;
+      });
     }
+//    setState(() {
+//      isProcessing = true;
+//    });
   }
 
   signInWithFacebook() async {
+    setState(() {
+      isProcessing = true;
+    });
     try {
-      _authService.facebookSignIn(widget.type);
-//      final fbLogin = FacebookLogin();
-//      final result = await fbLogin.logIn(['email']);
-//      switch (result.status) {
-//        case FacebookLoginStatus.loggedIn:
-//          final token = result.accessToken.token;
-//          final graphResponse = await http.get(
-//              'https://graph.facebook.com/v2.12/me?fields=name,picture,email&access_token=$token');
-//          final profile = JSON.jsonDecode(graphResponse.body);
-//          final AuthCredential facebookAuthCred =
-//              FacebookAuthProvider.getCredential(accessToken: token);
-//          if (widget.type == PageType.convertGuest) {
-//            guestConvertMethod(facebookAuthCred);
-//            Navigator.push(
-//                context,
-//                MaterialPageRoute(
-//                    builder: (context) => EditProfile(
-//                          name: profile['name'],
-//                          dpURL: profile['pictures']['data']['url'],
-//                        )));
-//          } else {
-//            final AuthResult authResult =
-//                await _auth.signInWithCredential(facebookAuthCred);
-//            FirebaseUser firebaseUser = authResult.user;
-//            checkIfAlreadyRegisterd(
-//                firebaseUser: firebaseUser,
-//                name: profile['name'],
-//                dpURL: profile['pictures']['data']['url']);
-//          }
-//          break;
-//        case FacebookLoginStatus.cancelledByUser:
-//          _scaffoldKey.currentState.showSnackBar(SnackBar(
-//            content: Text('Login cancelled'),
-//          ));
-//          break;
-//        case FacebookLoginStatus.error:
-//          print(result.errorMessage);
-//          _scaffoldKey.currentState.showSnackBar(SnackBar(
-//            content: Text('Something went wrong'),
-//          ));
-//          break;
-//      }
-    } catch (e) {
-      switch (e.code) {
-        case 'ERROR_EMAIL_ALREADY_IN_USE':
-          _scaffoldKey.currentState.showSnackBar(SnackBar(
-            content: Text('Email is already registered'),
-          ));
-          break;
-        case 'ERROR_PROVIDER_ALREADY_LINKED':
-        case 'ERROR_CREDENTIAL_ALREADY_IN_USE':
-          _scaffoldKey.currentState.showSnackBar(SnackBar(
-            content: Text('This account is already connected'),
-          ));
-          break;
-        case 'ERROR_USER_DISABLED':
-          _scaffoldKey.currentState.showSnackBar(SnackBar(
-            content: Text('User disabled'),
-          ));
-          break;
-        case 'ERROR_EMAIL_ALREADY_IN_USE':
-          _scaffoldKey.currentState.showSnackBar(SnackBar(
-            content: Text('Email already registered'),
-          ));
-          break;
-        default:
-          _scaffoldKey.currentState.showSnackBar(SnackBar(
-            content: Text('Something went wrong'),
-          ));
-          break;
+      await _authService.facebookSignIn(type);
+      if (type == PageType.convertGuest) {
+        Navigator.pop(context);
       }
+    } catch (e) {
+      _scaffoldKey.currentState.showSnackBar(SnackBar(
+        content: Text(e.message),
+      ));
+      setState(() {
+        isProcessing = false;
+      });
     }
+//    setState(() {
+//      isProcessing = false;
+//    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        actions: <Widget>[actionWidget],
-      ),
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 35.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    'Welcome',
-                    style:
-                        TextStyle(fontSize: 35.0, fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    'enter your details',
-                  ),
-                  SizedBox(
-                    height: 10.0,
-                  ),
-                  buildForm(widget.type),
-                  SizedBox(
-                    height: 30.0,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Spacer(flex: 1),
-                      Text('Continue With:'),
-                      Spacer(flex: 1),
-                      GestureDetector(
-                        onTap: signInWithGoogle,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            //shape: BoxShape.circle,
-                            image: DecorationImage(
-                                image:
-                                    AssetImage('assets/images/google_logo.png'),
-                                fit: BoxFit.fill),
+    return Stack(
+      children: [
+        Scaffold(
+          key: _scaffoldKey,
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            actions: <Widget>[actionWidget],
+          ),
+          body: Center(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 35.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      'Welcome',
+                      style: TextStyle(
+                          fontSize: 35.0, fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      'enter your details',
+                    ),
+                    SizedBox(
+                      height: 10.0,
+                    ),
+                    buildForm(type),
+                    SizedBox(
+                      height: 30.0,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Spacer(flex: 1),
+                        Text('Continue With:'),
+                        Spacer(flex: 1),
+                        GestureDetector(
+                          onTap: signInWithGoogle,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              //shape: BoxShape.circle,
+                              image: DecorationImage(
+                                  image: AssetImage(
+                                      'assets/images/google_logo.png'),
+                                  fit: BoxFit.fill),
+                            ),
+                            width: 40.0,
+                            height: 40.0,
                           ),
-                          width: 40.0,
-                          height: 40.0,
                         ),
-                      ),
-                      Spacer(flex: 1),
-                      GestureDetector(
-                        onTap: signInWithFacebook,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            //shape: BoxShape.circle,
-                            image: DecorationImage(
-                                image: AssetImage('assets/images/fb_logo.png'),
-                                fit: BoxFit.fill),
+                        Spacer(flex: 1),
+                        GestureDetector(
+                          onTap: signInWithFacebook,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              //shape: BoxShape.circle,
+                              image: DecorationImage(
+                                  image:
+                                      AssetImage('assets/images/fb_logo.png'),
+                                  fit: BoxFit.fill),
+                            ),
+                            width: 40.0,
+                            height: 40.0,
                           ),
-                          width: 40.0,
-                          height: 40.0,
                         ),
-                      ),
-                      Spacer(
-                        flex: 1,
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: 25.0,
-                  ),
-                  widget.type == PageType.signIn ||
-                          widget.type == PageType.loginWithoutConvert
-                      ? GestureDetector(
-                          onTap: () {
-                            Navigator.pushReplacement(context,
-                                MaterialPageRoute(builder: (context) {
-                              if (widget.type == PageType.signIn)
-                                return SignInPage(
-                                  type: PageType.signUp,
-                                );
-                              return SignInPage(
-                                type: PageType.convertGuest,
-                              );
-                            }));
-                          },
-                          child: RichText(
-                            text: TextSpan(
-                                text: 'Don\'t have an account? ',
-                                style: Theme.of(context).textTheme.subtitle,
-                                children: [
-                                  TextSpan(
-                                      text: 'Sign Up Now!',
-                                      style: TextStyle(
-                                          color: Theme.of(context).primaryColor,
-                                          fontSize: 18.0)
-                                      //style: Text
-                                      )
-                                ]),
-                          ),
+                        Spacer(
+                          flex: 1,
                         )
-                      : GestureDetector(
-                          onTap: () {
-                            Navigator.pushReplacement(context,
-                                MaterialPageRoute(builder: (context) {
-                              if (widget.type == PageType.signUp)
-                                return SignInPage(
-                                  type: PageType.signIn,
-                                );
-                              return SignInPage(
-                                type: PageType.loginWithoutConvert,
-                              );
-                            }));
-                          },
-                          child: RichText(
-                            text: TextSpan(
-                                text: 'Already have an account? ',
-                                style: Theme.of(context).textTheme.subtitle,
-                                children: [
-                                  TextSpan(
-                                      text: 'Login here!',
-                                      style: TextStyle(
-                                          color: Theme.of(context).primaryColor,
-                                          fontSize: 18.0)
-                                      //style: Text
-                                      )
-                                ]),
-                          ),
-                        ),
-                  SizedBox(
-                    height: 15.0,
-                  ),
-                  widget.type == PageType.signUp
-                      ? OutlineButton(
-                          highlightElevation: 2.0,
-                          textColor: Theme.of(context).accentColor,
-                          highlightedBorderColor: Theme.of(context).accentColor,
-                          onPressed: anonymousSignIn,
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 25.0, vertical: 15.0),
-                          child: Text(
-                            'Skip for now',
-                            style: TextStyle(
-                              decoration: TextDecoration.underline,
-                              decorationStyle: TextDecorationStyle.dotted,
-                              decorationColor: Theme.of(context).accentColor,
+                      ],
+                    ),
+                    SizedBox(
+                      height: 25.0,
+                    ),
+                    type == PageType.signIn ||
+                            type == PageType.loginWithoutConvert
+                        ? GestureDetector(
+                            onTap: () {
+                              if (type == PageType.signIn)
+                                setState(() {
+                                  type = PageType.signUp;
+                                });
+                              else
+                                setState(() {
+                                  type = PageType.convertGuest;
+                                });
+                            },
+                            child: RichText(
+                              text: TextSpan(
+                                  text: 'Don\'t have an account? ',
+                                  style: Theme.of(context).textTheme.subtitle,
+                                  children: [
+                                    TextSpan(
+                                        text: 'Sign Up Now!',
+                                        style: TextStyle(
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                            fontSize: 18.0)
+                                        //style: Text
+                                        )
+                                  ]),
+                            ),
+                          )
+                        : GestureDetector(
+                            onTap: () {
+                              if (type == PageType.signUp)
+                                setState(() {
+                                  type = PageType.signIn;
+                                });
+                              else
+                                setState(() {
+                                  type = PageType.loginWithoutConvert;
+                                });
+                            },
+                            child: RichText(
+                              text: TextSpan(
+                                  text: 'Already have an account? ',
+                                  style: Theme.of(context).textTheme.subtitle,
+                                  children: [
+                                    TextSpan(
+                                        text: 'Login here!',
+                                        style: TextStyle(
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                            fontSize: 18.0)
+                                        //style: Text
+                                        )
+                                  ]),
                             ),
                           ),
-                        )
-                      : widget.type == PageType.signIn ||
-                              widget.type == PageType.loginWithoutConvert
-                          ? FlatButton(
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => ResetPassword()));
-                              },
-                              textColor: Theme.of(context).accentColor,
-                              child: Text('Forgot password?'),
-                            )
-                          : Text('')
-                ],
+                    SizedBox(
+                      height: 15.0,
+                    ),
+                    type == PageType.signUp
+                        ? OutlineButton(
+                            highlightElevation: 2.0,
+                            textColor: Theme.of(context).accentColor,
+                            highlightedBorderColor:
+                                Theme.of(context).accentColor,
+                            onPressed: anonymousSignIn,
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 25.0, vertical: 15.0),
+                            child: Text(
+                              'Skip for now',
+                              style: TextStyle(
+                                decoration: TextDecoration.underline,
+                                decorationStyle: TextDecorationStyle.dotted,
+                                decorationColor: Theme.of(context).accentColor,
+                              ),
+                            ),
+                          )
+                        : type == PageType.signIn ||
+                                type == PageType.loginWithoutConvert
+                            ? FlatButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              ResetPassword()));
+                                },
+                                textColor: Theme.of(context).accentColor,
+                                child: Text('Forgot password?'),
+                              )
+                            : Text('')
+                  ],
+                ),
               ),
             ),
           ),
         ),
-      ),
+        if (isProcessing)
+          (Container(
+            width: double.infinity,
+            height: double.infinity,
+            color: Colors.black.withOpacity(0.8),
+            child: Loader(),
+          ))
+      ],
     );
   }
 

@@ -34,9 +34,9 @@ class NotificationTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 100,
+      height: 80,
       color: Colors.white,
-      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 0),
+      padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
@@ -48,12 +48,12 @@ class NotificationTile extends StatelessWidget {
                       )));
             },
             child: CircleAvatar(
-              radius: 30,
+              radius: 25,
               backgroundImage: NetworkImage(user.dpURL),
             ),
           ),
           SizedBox(
-            width: 15.0,
+            width: 10.0,
           ),
           Expanded(
             child: Column(
@@ -70,13 +70,13 @@ class NotificationTile extends StatelessWidget {
                             style: Theme.of(context).textTheme.body1)
                       ]),
                 ),
-                SizedBox(height: 5.0),
-                if (comment.isNotEmpty || comment != null)
+                //SizedBox(height: 5.0),
+                if (type == 'comment')
                   (Text('\'$comment\'')),
               ],
             ),
           ),
-          if (post != null)
+          if (type != 'follow')
             (GestureDetector(
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
@@ -86,8 +86,8 @@ class NotificationTile extends StatelessWidget {
               },
               child: FittedBox(
                 child: Container(
-                  width: 70.0,
-                  height: 100,
+                  width: 50.0,
+                  height: 80,
                   decoration: BoxDecoration(
                       image: DecorationImage(
                           image: NetworkImage(post.thumbnailURL),

@@ -1,7 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6a22968c-16f8-490c-a61f-fca03f705f26" name="Default Changelist" comment="" />
+    <list default="true" id="a6d1d267-6a4c-4274-87c4-8fa1ffb42f4f" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../lib/db/storageservice.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../lib/screens/homepage.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.packages" beforeDir="false" afterPath="$PROJECT_DIR$/../.packages" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../functions/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/../functions/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/db/authservice.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/db/authservice.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/db/postservice.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/db/postservice.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/main.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/modals/currentuser.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/modals/currentuser.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/modals/post_modal.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/modals/post_modal.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/screens/edit_profile.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/screens/edit_profile.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/screens/sign_in_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/screens/sign_in_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/screens/upload_video.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/screens/upload_video.dart" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,10 +34,14 @@
       </state>
     </system>
   </component>
-  <component name="ProjectId" id="1Ynk1vsFmom6DH9nV0lvWHR032N" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectId" id="1aZpwKtKi3Qqz5ryEXb1UVslI9x" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
     <property name="android.sdk.path" value="$USER_HOME$/AppData/Local/Android/Sdk" />
-    <property name="settings.editor.selected.configurable" value="preferences.pathVariables" />
+    <property name="settings.editor.selected.configurable" value="AndroidSdkUpdater" />
     <property name="show.migrate.to.gradle.popup" value="false" />
   </component>
   <component name="RunDashboard">
@@ -38,12 +61,23 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="6a22968c-16f8-490c-a61f-fca03f705f26" name="Default Changelist" comment="" />
-      <created>1583585533839</created>
+      <changelist id="a6d1d267-6a4c-4274-87c4-8fa1ffb42f4f" name="Default Changelist" comment="" />
+      <created>1586953207368</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1583585533839</updated>
+      <updated>1586953207368</updated>
     </task>
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>

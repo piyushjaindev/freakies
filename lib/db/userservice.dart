@@ -23,7 +23,6 @@ class UserService {
       else
         return false;
     } catch (e) {
-      print(e);
       throw e;
     }
   }
@@ -45,7 +44,7 @@ class UserService {
     try {
       QuerySnapshot followerSnapshot = await followerRef
           .document(id)
-          .collection('userFollowing')
+          .collection('userFollowers')
           .getDocuments();
 
       return followerSnapshot.documents.length;
@@ -57,19 +56,16 @@ class UserService {
   Future<bool> validateUsername(String username) async {
     try {
       final userRef = Firestore.instance.collection('users');
-      print(username);
       final querySnapshot = await userRef
           .where('username', isEqualTo: username)
           .limit(1)
           .getDocuments();
       final doc = querySnapshot.documents;
-      //print(doc.first.documentID);
       if (doc.length < 1)
         return true;
       else
         return false;
     } catch (e) {
-      print(e);
       throw e;
     }
   }
@@ -122,8 +118,7 @@ class UserService {
         'id': user.id,
         'email': user.email,
         'timestamp': DateTime.now(),
-        'dpURL': user.dpURL ??
-            'https://firebasestorage.googleapis.com/v0/b/freakies-f9a09.appspot.com/o/profile.jpg?alt=media&token=1857b905-be18-41d9-ac2b-4368d741bddc'
+        'dpURL': user.dpURL
 //            'dpURL': _dpFile != null
 //                ? await uploadImage(firebaseUser.uid)
 //                : 'https://firebasestorage.googleapis.com/v0/b/freakies-f9a09.appspot.com/o/profile.jpg?alt=media&token=1857b905-be18-41d9-ac2b-4368d741bddc',
@@ -153,38 +148,32 @@ class UserService {
     }
   }
 
-  Future<Map<String, DocumentSnapshot>> searchUsers(String searchTerm) async {
+  Future<List<User>> searchUsers({String searchTerm, String cid}) async {
     List<User> userList = [];
-    Map<String, User> userMap = {};
-    List<DocumentSnapshot> documentList = [];
     Map<String, DocumentSnapshot> documentMap = {};
     try {
       final usernameSnapshot = await userRef
           .orderBy('username')
           .startAt([searchTerm]).endAt([searchTerm + '\uf8ff']).getDocuments();
-      documentList.addAll(usernameSnapshot.documents);
       usernameSnapshot.documents.forEach((document) {
         documentMap.putIfAbsent(document.documentID, () => document);
-//        final doc = document.data;
-//        final user = User.create(doc);
-//        userList.add(user);
+//
       });
       final nameSnapshot = await userRef
           .orderBy('name')
           .startAt([searchTerm]).endAt([searchTerm + '\uf8ff']).getDocuments();
       nameSnapshot.documents.forEach((document) {
         documentMap.putIfAbsent(document.documentID, () => document);
-//        bool found = false;
-//        final doc = document.data;
-//        final user = User.create(doc);
-//        for (User testUser in userList) {
-//          if (testUser.username == user.username) found = true;
-//          if (found) break;
-//        }
-//        if (!found) userList.add(user);
       });
-      //return userList;
-      return documentMap;
+
+      //return documentMap;
+      for (DocumentSnapshot doc in documentMap.values) {
+        User user = User.create(doc.data);
+        await user.countFollow(this);
+        await user.setFollow(this, cid);
+        userList.add(user);
+      }
+      return userList;
     } catch (e) {
       throw e;
     }

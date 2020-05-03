@@ -1,7 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a9996ac5-5d59-4fd8-a968-45c0e3565685" name="Default Changelist" comment="" />
+    <list default="true" id="a9996ac5-5d59-4fd8-a968-45c0e3565685" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/lib/db/storageservice.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/screens/homepage.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.packages" beforeDir="false" afterPath="$PROJECT_DIR$/.packages" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/android/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/android.iml" beforeDir="false" afterPath="$PROJECT_DIR$/android/android.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/profile.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/firebase.json" beforeDir="false" afterPath="$PROJECT_DIR$/firebase.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/functions/.eslintrc.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/functions/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/functions/index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/functions/package-lock.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/functions/package.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/db/authservice.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/db/authservice.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/db/postservice.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/db/postservice.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/db/userservice.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/db/userservice.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modals/currentuser.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modals/currentuser.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modals/functions.dart" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modals/post_modal.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modals/post_modal.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modals/theme.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modals/theme.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/modals/user_modal.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/modals/user_modal.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/screens/change_password.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/change_password.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/screens/edit_profile.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/edit_profile.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/screens/home.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/home.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/screens/notifications.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/notifications.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/screens/post.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/post.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/screens/profile.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/profile.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/screens/profile_settings.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/profile_settings.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/screens/reset_password.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/reset_password.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/screens/search.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/search.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/screens/sign_in_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/sign_in_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/screens/upload_video.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/upload_video.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/screens/verify_email.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/verify_email.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/screens/video_pageview.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/video_pageview.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/widgets/comment_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/comment_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/widgets/notification_tile.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/notification_tile.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/widgets/profile_bio_carousel.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/profile_bio_carousel.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/widgets/profile_display_videos.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/profile_display_videos.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/widgets/video_icons.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/video_icons.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/widgets/video_player_widget.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/video_player_widget.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -9,10 +54,22 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="Nexus_5X_API_29_x86" />
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Dart File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="ProjectId" id="1aU5KcGXM1zg4ZmmoJu3gKtCsID" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
     <property name="dart.analysis.tool.window.force.activate" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="io.flutter.reload.alreadyRun" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../freakies" />
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.2" />
@@ -48,5 +105,54 @@
       <updated>1586777268744</updated>
     </task>
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="Dart">
+          <url>file://$PROJECT_DIR$/lib/screens/edit_profile.dart</url>
+          <line>75</line>
+          <option name="timeStamp" value="17" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="Dart">
+          <url>file://$PROJECT_DIR$/lib/screens/edit_profile.dart</url>
+          <line>76</line>
+          <option name="timeStamp" value="18" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="Dart">
+          <url>file://$PROJECT_DIR$/lib/screens/edit_profile.dart</url>
+          <line>77</line>
+          <option name="timeStamp" value="19" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="Dart">
+          <url>file://$PROJECT_DIR$/lib/screens/edit_profile.dart</url>
+          <line>79</line>
+          <option name="timeStamp" value="20" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="Dart">
+          <url>file://$PROJECT_DIR$/lib/screens/edit_profile.dart</url>
+          <line>80</line>
+          <option name="timeStamp" value="21" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="Dart">
+          <url>file://$PROJECT_DIR$/lib/db/authservice.dart</url>
+          <line>7</line>
+          <option name="timeStamp" value="22" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

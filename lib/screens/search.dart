@@ -1,9 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:freakies/db/userservice.dart';
 import 'package:freakies/modals/currentuser.dart';
 import 'package:freakies/modals/user_modal.dart';
 import 'package:freakies/screens/profile.dart';
+import 'package:freakies/widgets/loader.dart';
 import 'package:provider/provider.dart';
 
 class Search extends StatefulWidget {
@@ -12,7 +12,7 @@ class Search extends StatefulWidget {
 }
 
 class _SearchState extends State<Search> {
-  TextEditingController _commentTextController = TextEditingController();
+  TextEditingController _commentTextController;
   String _searchTerm;
   UserService userService;
   CurrentUser user;
@@ -20,12 +20,19 @@ class _SearchState extends State<Search> {
   @override
   void initState() {
     userService = UserService();
-    user = Provider.of<CurrentUser>(context);
+    _commentTextController = TextEditingController();
     super.initState();
   }
 
   @override
+  void dispose() {
+    _commentTextController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    user = Provider.of<CurrentUser>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
@@ -41,7 +48,7 @@ class _SearchState extends State<Search> {
                 Icons.search,
               ),
             ),
-            onChanged: (val) {
+            onSubmitted: (val) {
               String search = val.trim();
               if (search.isEmpty ||
                   search.length < 3 ||
@@ -60,20 +67,17 @@ class _SearchState extends State<Search> {
       body: _searchTerm == null
           ? Text('')
           : FutureBuilder(
-              future: userService.searchUsers(_searchTerm),
+              future: userService.searchUsers(
+                  searchTerm: _searchTerm, cid: user.id),
               builder: (context, snapshot) {
-//          if(snapshot.connectionState == ConnectionState.waiting)
-//            return Loader();
-                if (snapshot.hasData) {
-                  Map<String, DocumentSnapshot> documentMap = snapshot.data;
-                  List<DocumentSnapshot> documentList =
-                      documentMap.values.toList();
+                if (snapshot.connectionState == ConnectionState.waiting)
+                  return Loader();
+                else if (snapshot.hasData) {
+                  List<User> users = snapshot.data;
+
                   return ListView.builder(
-                      itemCount: documentList.length,
+                      itemCount: users.length,
                       itemBuilder: (context, index) {
-                        User user = User.create(documentList[index].data);
-                        user.countFollow(userService);
-                        user.setFollow(userService, user.id);
                         return Card(
                           elevation: 6.0,
                           margin: EdgeInsets.symmetric(
@@ -85,15 +89,15 @@ class _SearchState extends State<Search> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => Profile(
-                                            user: user,
+                                            user: users[index],
                                           )));
                             },
                             leading: CircleAvatar(
                               radius: 25.0,
-                              backgroundImage: NetworkImage(user.dpURL),
+                              backgroundImage: NetworkImage(users[index].dpURL),
                             ),
-                            title: Text("@${user.username}"),
-                            subtitle: Text(user.fullName),
+                            title: Text("@${users[index].username}"),
+                            subtitle: Text(users[index].fullName),
                           ),
                         );
                       });

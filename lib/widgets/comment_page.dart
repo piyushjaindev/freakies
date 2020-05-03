@@ -8,14 +8,18 @@ import 'package:freakies/widgets/loader.dart';
 import 'package:provider/provider.dart';
 
 class CommentPage extends StatelessWidget {
+  final PostModal post;
   final commentsRef = Firestore.instance.collection('comments');
+
+  CommentPage(this.post);
+
   @override
   Widget build(BuildContext context) {
-    PostModal post = Provider.of<PostModal>(context, listen: false);
+    //PostModal post = Provider.of<PostModal>(context, listen: false);
 
-    return FractionallySizedBox(
-      widthFactor: 1.0,
-      heightFactor: 0.6,
+    return Container(
+      //widthFactor: 1.0,
+      height: MediaQuery.of(context).size.height * 0.5,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
@@ -32,22 +36,24 @@ class CommentPage extends StatelessWidget {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
+                  color: Theme.of(context).primaryColor,
                   icon: Icon(Icons.close),
                 )
               ],
             ),
           ),
-          StreamBuilder(
-            stream: commentsRef
-                .document(post.postID)
-                .collection('commentsData')
-                .orderBy('timestamp', descending: true)
-                .snapshots(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                List<DocumentSnapshot> list = snapshot.data.documents;
-                return Expanded(
-                  child: ListView.builder(
+          Expanded(
+            child: StreamBuilder(
+              stream: commentsRef
+                  .document(post.postID)
+                  .collection('commentsData')
+                  .orderBy('timestamp', descending: true)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  List<DocumentSnapshot> list = snapshot.data.documents;
+                  return ListView.builder(
+                    itemCount: list.length,
                     itemBuilder: (context, index) {
                       return ListTile(
                         leading: CircleAvatar(
@@ -59,17 +65,17 @@ class CommentPage extends StatelessWidget {
                         subtitle: Text(list[index].data['comment']),
                       );
                     },
-                  ),
-                );
-              } else if (snapshot.hasError) {
-                Scaffold.of(context).showSnackBar(SnackBar(
-                  content: Text('Error fetching comments'),
-                ));
-              }
-              return Loader();
-            },
+                  );
+                } else if (snapshot.hasError) {
+                  Scaffold.of(context).showSnackBar(SnackBar(
+                    content: Text('Error fetching comments'),
+                  ));
+                }
+                return Loader();
+              },
+            ),
           ),
-          CommentButton()
+          CommentButton(post)
         ],
       ),
     );
@@ -77,16 +83,19 @@ class CommentPage extends StatelessWidget {
 }
 
 class CommentButton extends StatelessWidget {
+  final PostModal post;
   final TextEditingController _controller = TextEditingController();
+  CommentButton(this.post);
   @override
   Widget build(BuildContext context) {
-    PostModal post = Provider.of<PostModal>(context, listen: false);
+    //PostModal post = Provider.of<PostModal>(context, listen: false);
     CurrentUser user = Provider.of<CurrentUser>(context);
     return Card(
       margin: EdgeInsets.only(top: 5.0, bottom: 0, right: 0, left: 0),
       elevation: 2.0,
       child: Row(
         mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           if (user.type == UserType.anonymous)
             (Row(

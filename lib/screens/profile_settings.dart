@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:freakies/modals/currentuser.dart';
 import 'package:freakies/screens/change_password.dart';
 import 'package:freakies/screens/edit_profile.dart';
-import 'package:freakies/screens/sign_in_page.dart';
 import 'package:provider/provider.dart';
 
 class ProfileSettings extends StatelessWidget {
@@ -87,16 +86,17 @@ class ProfileSettings extends StatelessWidget {
                     .body2
                     .copyWith(color: Color(0xFFE64926)),
               ),
-              onPressed: () {
+              onPressed: () async {
                 final _auth = FirebaseAuth.instance;
-                _auth.signOut();
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => SignInPage(
-                            //type: PageType.signIn,
-                            )),
-                    (Route<dynamic> route) => false);
+                await _auth.signOut();
+                Navigator.of(context).pop();
+//                Navigator.pushAndRemoveUntil(
+//                    context,
+//                    MaterialPageRoute(
+//                        builder: (context) => SignInPage(
+//                            //type: PageType.signIn,
+//                            )),
+//                    (Route<dynamic> route) => false);
               },
             ),
           ],

@@ -11,9 +11,11 @@ class VideoIcons extends StatelessWidget {
     PostModal post = Provider.of<PostModal>(context, listen: false);
     CurrentUser user = Provider.of<CurrentUser>(context, listen: false);
     return Container(
+      width: MediaQuery.of(context).size.width,
+      height: 400,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           FractionallySizedBox(
             widthFactor: 0.6,
@@ -51,11 +53,11 @@ class VideoIcons extends StatelessWidget {
                   backgroundImage: NetworkImage(post.owner.dpURL),
                 ),
               ),
-              Consumer<PostModal>(
-                builder: (_, post, child) => child,
-                child: IconButton(
+              Selector<PostModal, bool>(
+                selector: (_, postModal) => postModal.isLiked,
+                builder: (_, isLiked, __) => IconButton(
                   icon: Icon(
-                    post.isLiked ? Icons.favorite : Icons.favorite_border,
+                    isLiked ? Icons.favorite : Icons.favorite_border,
                   ),
                   iconSize: 40.0, //isLiked ? 25.0 : 20.0,
                   //color: Colors.redAccent,
@@ -75,7 +77,7 @@ class VideoIcons extends StatelessWidget {
                       // isScrollControlled: true,
                       context: context,
                       builder: (context) {
-                        return CommentPage();
+                        return CommentPage(post);
                       });
                 },
               ),

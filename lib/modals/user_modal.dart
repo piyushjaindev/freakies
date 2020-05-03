@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:freakies/db/userservice.dart';
+import 'package:freakies/modals/currentuser.dart';
 
 class User with ChangeNotifier {
   String fullName;
@@ -27,7 +28,8 @@ class User with ChangeNotifier {
     return User(
       fullName: doc['fullName'],
       username: doc['username'],
-      dpURL: doc['dpURL'],
+      dpURL: doc['dpURL'] ??
+          'https://media.publit.io/file/w_150/profile-picture.jpg',
       bio: doc['bio'],
       userID: doc['id'],
     );
@@ -56,6 +58,17 @@ class User with ChangeNotifier {
     followed ? followers-- : followers++;
     followed = !followed;
     notifyListeners();
+  }
+
+  User.fromCurrentUser(CurrentUser currentUser) {
+    fullName = currentUser.fullName;
+    _username = currentUser.username;
+    _userID = currentUser.id;
+    bio = currentUser.bio;
+    dpURL = currentUser.dpURL;
+    followings = currentUser.followings;
+    followers = currentUser.followers;
+    followed = false;
   }
 
   String get id => _userID;
